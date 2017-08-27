@@ -128,7 +128,7 @@ The fields represent:
   * `disable_filters`: if nonzero, do not apply filters like CLRF (to convert file newlines between UNIX and DOS).
   * `dir_mode`: read/write/access mode for any directories involved in the checkout. Default is `0755`.
   * `file_mode`: read/write/access mode for any files involved in the checkout.
-     Default is `0755` or `0644`, depeding on the blob.
+     Default is `0755` or `0644`, depending on the blob.
   * `file_open_flags`: bitflags used to open any files during the checkout.
   * `notify_flags`: Flags for what sort of conflicts the user should be notified about.
   * `notify_cb`: An optional callback function to notify the user if a checkout conflict occurs.
@@ -483,6 +483,20 @@ end
     LibGit2.BlameOptions
 
 Matches the [`git_blame_options`](https://libgit2.github.com/libgit2/#HEAD/type/git_blame_options) struct.
+
+The fields represent:
+  * `version`: version of the struct in use, in case this changes later. For now, always `1`.
+  * `flags`: one of `Consts.BLAME_NORMAL` or `Consts.BLAME_FIRST_PARENT` (the other blame flags
+     are not yet implemented by libgit2).
+  * `min_match_characters`: the minimum number of *alphanumeric* characters which much change
+    in a commit in order for the change to be associated with that commit. The default is 20.
+    Only takes effect if one of the `Consts.BLAME_*_COPIES` flags are used, which libgit2 does
+    not implement yet.
+  * `newest_commit`: the [`GitHash`](@ref) of the newest commit from which to look at changes.
+  * `oldest_commit`: the [`GitHash`](@ref) of the oldest commit from which to look at changes.
+  * `min_line`: the first line of the file from which to starting blaming. The default is `1`.
+  * `max_line`: the last line of the file to which to blame. The default is `0`, meaning the
+    last line of the file.
 """
 @kwdef struct BlameOptions
     version::Cuint                    = 1
@@ -651,6 +665,14 @@ end
 
 Options to control how `git_status_foreach_ext()` will issue callbacks.
 Matches the [`git_status_opt_t`](https://libgit2.github.com/libgit2/#HEAD/type/git_status_opt_t) struct.
+
+The fields represent:
+  * `version`: version of the struct in use, in case this changes later. For now, always `1`.
+  * `show`: a flag for which files to examine and in which order.
+    The default is `Consts.STATUS_SHOW_INDEX_AND_WORKDIR`.
+  * `flags`: flags for controlling any callbacks used in a status call.
+  * `pathspec`: an array of paths to use for path-matching. The behavior of the path-matching
+    will vary depending on the values of `show` and `flags`.
 """
 @kwdef struct StatusOptions
     version::Cuint           = 1
